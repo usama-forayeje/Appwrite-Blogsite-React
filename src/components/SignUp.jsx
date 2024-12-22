@@ -1,29 +1,31 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom"; // Corrected router import
+import { useNavigate, Link } from "react-router-dom"; // Corrected router import
 import authService from "../appwrite/auth";
 import { login } from "../fetchers/authSlice";
 import Input from "./Input";
 import Button from "./Button";
 
-function LogIn() {
-  const dispatch = useDispatch();
+function SignUp() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
   const [error, setError] = useState(null);
 
-  const logIn = async (data) => {
+  const signUp = async (data) => {
     setError("");
     try {
-      const session = await authService.login(data);
+      const session = await authService.createAccount(data);
       if (session) {
         const userData = await authService.getCurrentUser();
-        userData && dispatch(login(userData));
-        navigate("/");
+        if (userData) {
+          dispatch(login(userData));
+          navigate("/");
+        }
       }
     } catch (err) {
-      setError(err.message || "An error occurred while logging in.");
+      setError(err.message || "An error occurred during sign up.");
     }
   };
 
@@ -31,12 +33,12 @@ function LogIn() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
         <h2 className="mb-4 text-2xl font-bold text-center text-gray-800">
-          Sign in to your account
+          Create a new account
         </h2>
         <p className="mb-6 text-sm text-center text-gray-600">
-          Don&apos;t have an account?{" "}
-          <Link to="/signUp" className="text-indigo-600 hover:underline">
-            Sign up
+          Already have an account?{" "}
+          <Link to="/logIn" className="text-indigo-600 hover:underline">
+            Log in
           </Link>
         </p>
         {error && (
@@ -44,7 +46,23 @@ function LogIn() {
             {error}
           </div>
         )}
-        <form onSubmit={handleSubmit(logIn)} className="space-y-4">
+        <form onSubmit={handleSubmit(signUp)} className="space-y-4">
+          <Input
+            label="Name"
+            type="text"
+            id="name"
+            {...register("name", {
+              required: "Name is required",
+              minLength: {
+                value: 3,
+                message: "Name must be at least 3 characters",
+              },
+            })}
+          />
+          {errors.name && (
+            <p className="text-sm text-red-600">{errors.name.message}</p>
+          )}
+
           <Input
             label="Email"
             type="email"
@@ -82,7 +100,7 @@ function LogIn() {
             className="w-full text-white bg-indigo-600 hover:bg-indigo-700"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Logging in..." : "Log in"}
+            {isSubmitting ? "Signing up..." : "Sign Up"}
           </Button>
         </form>
       </div>
@@ -90,4 +108,4 @@ function LogIn() {
   );
 }
 
-export default LogIn;
+export default SignUp;
