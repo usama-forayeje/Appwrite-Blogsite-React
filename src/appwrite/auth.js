@@ -30,7 +30,7 @@ export class AuthService {
       return userAccount;
     } catch (error) {
       console.error("Error creating account", error);
-    }
+    } return null;
   }
 
   // Log in a user with email and password
@@ -39,7 +39,7 @@ export class AuthService {
       return await this.account.createEmailPasswordSession(email, password);
     } catch (error) {
       console.error("Error logging in", error);
-    }
+    } return null;
   }
 
   // Retrieve the current logged-in user
@@ -59,6 +59,7 @@ export class AuthService {
     } catch (error) {
       console.error("Error logging out", error);
     }
+    return null;
   }
 }
 
