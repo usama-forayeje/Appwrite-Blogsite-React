@@ -1,65 +1,66 @@
 import { Client, Account, ID } from "appwrite";
 import config from "../config/config";
 
+// AuthService class to handle authentication using Appwrite
 export class AuthService {
-// Create a new client    
-  Client = new Client();
-  Account;
-// Constructor function to set the endpoint and project id
+  client = new Client();
+  account;
+
   constructor() {
-    this.Client.setEndpoint(config.appwriteUrl).setProject(
-      config.appwriteProjectId
-    );
-    this.Account = new Account(this.Client);
+    this.client
+      .setEndpoint(config.appwriteUrl)
+      .setProject(config.appwriteProjectId);
+
+    this.account = new Account(this.client);
   }
-// Create account function to create a new account with email, password and name
-  async CreateAccount({ email, password, name }) {
+
+  // Create a new user account
+  async createAccount({ email, password, name }) {
     try {
-      const userAccount = await this.Account.create(
+      const userAccount = await this.account.create(
         ID.unique(),
         email,
         password,
         name
       );
+
       if (userAccount) {
-        // call another function to create a user profile
         return this.login({ email, password });
-      } else {
-        return userAccount;
       }
+      return userAccount;
     } catch (error) {
-      console.log(error);
+      console.error("Error creating account", error);
     }
   }
-// Login function to create a session with the email and password   
-  async Login({ email, password }) {
+
+  // Log in a user with email and password
+  async login({ email, password }) {
     try {
-      return await this.Account.createEmailPasswordSession(email, password);
+      return await this.account.createEmailPasswordSession(email, password);
     } catch (error) {
-      console.log(error);
+      console.error("Error logging in", error);
     }
   }
-// Get the current user function to get the current user
+
+  // Retrieve the current logged-in user
   async getCurrentUser() {
     try {
-      return await this.Account.get();
+      return await this.account.get();
     } catch (error) {
-      console.log("Appwrite Error getting user", error);
+      console.error("Error getting current user", error);
     }
     return null;
   }
 
-  // Logout function to delete the current session
-  async Logout() {
+  // Log out the current user
+  async logout() {
     try {
-      return await this.Account.deleteSession("current");
+      return await this.account.deleteSession("current");
     } catch (error) {
-      console.log("Appwrite Error logging out", error);
+      console.error("Error logging out", error);
     }
   }
 }
 
-// Export the AuthService class
 const authService = new AuthService();
-// Export the authService object
 export default authService;
