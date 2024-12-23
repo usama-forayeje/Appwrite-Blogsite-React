@@ -1,4 +1,4 @@
-import { Container } from "../components/container/Container"
+import  Container  from "../components/container/Container"
 import PostForm from "../components/postForm/PostForm"
 
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
+import { useNavigate } from "react-router";
 
 function AuthLayout({ children, Authenticated = true }) {
   const navigate = useNavigate();
@@ -23,5 +24,9 @@ function AuthLayout({ children, Authenticated = true }) {
   // সফল চেকের পরে চিলড্রেন রেন্ডার
   return <div className="min-h-screen">{children}</div>;
 }
+AuthLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+  Authenticated: PropTypes.bool
+};
 
 export default AuthLayout;

@@ -1,4 +1,4 @@
- import {SignUp} from '../components/SignUp'
+ import SignUp from '../components/SignUp'
 function SignIn() {
   return (
     <div className="py-8">

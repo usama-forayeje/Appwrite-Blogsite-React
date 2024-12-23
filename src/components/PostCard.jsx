@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom"; // Updated for correct router
+
+import { Link } from "react-router";
 import service from "../appwrite/appwrite.config";
+import PropTypes from 'prop-types';
 
 function PostCard({ $id, title, image, description = "", className = "" }) {
   return (
@@ -28,5 +30,12 @@ function PostCard({ $id, title, image, description = "", className = "" }) {
     </div>
   );
 }
+PostCard.propTypes = {
+  $id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  image: PropTypes.string,
+  description: PropTypes.string,
+  className: PropTypes.string,
+};
 
 export default PostCard;

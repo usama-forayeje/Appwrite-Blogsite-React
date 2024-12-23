@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import service from "../../appwrite/appwrite.config";
@@ -144,5 +145,15 @@ function PostForm({ post }) {
     </form>
   );
 }
+PostForm.propTypes = {
+  post: PropTypes.shape({
+    title: PropTypes.string,
+    slug: PropTypes.string,
+    content: PropTypes.string,
+    status: PropTypes.string,
+    image: PropTypes.string,
+    $id: PropTypes.string,
+  }),
+};
 
 export default PostForm;

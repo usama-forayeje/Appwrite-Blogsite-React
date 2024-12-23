@@ -1,5 +1,6 @@
 import React from "react";
 import { useId } from "react";
+import PropTypes from "prop-types";
 
 const Input = React.forwardRef(function Input(
   { 
@@ -38,5 +39,13 @@ const Input = React.forwardRef(function Input(
     </div>
   );
 });
+Input.propTypes = {
+  label: PropTypes.string,
+  type: PropTypes.string,
+  className: PropTypes.string,
+  error: PropTypes.string,
+  labelClassName: PropTypes.string,
+  containerClassName: PropTypes.string,
+};
 
 export default Input;
