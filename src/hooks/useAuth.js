@@ -22,10 +22,17 @@ export const useLogin = () => {
 };
 
 export const useSignup = () => {
+    const queryClient = useQueryClient();
+    const { setUser } = useAuthStore();
     return useMutation({
         mutationFn: ({ email, password, name }) => authService.createAccount({ email, password, name }),
-         onSuccess: (userAccount) => {
-            console.log("Account created successfully. Please verify your email.", userAccount);
+        onSuccess: () => {
+            authService.getCurrentUser().then(userData => {
+                if (userData) {
+                    setUser(userData);
+                    queryClient.invalidateQueries({ queryKey: ['user'] });
+                }
+            });
         },
     });
 };

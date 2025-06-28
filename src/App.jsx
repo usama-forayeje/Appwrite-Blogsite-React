@@ -1,18 +1,39 @@
-import { Button } from "@/components/ui/button"
-import { useUser } from "./hooks/useAuth"
+import NotFound from "./pages/NotFound"
+import Home from "./pages/Home"
+import AuthLayout from "./layout/AuthLayout"
+import RootLayout from "./layout/RootLayout"
+import Login from "./pages/auth/Login"
+import Register from "./pages/auth/Register"
+import VerifyEmail from "./pages/auth/VerifyEmail"
+import { Route, Routes } from "react-router"
 
 function App() {
-  const { data: user } = useUser()
-
-  console.log(user)
-
   return (
-    <>
-      <Button>Click me</Button>
-      <p className="read-the-docs text-cyan-300">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+   <main className="flex h-screen">
+      <Routes>
+        {/* ================================================== */}
+        {/* =============== Public Routes ==================== */}
+        {/* ================================================== */}
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+        </Route>
+
+        {/* ================================================== */}
+        {/* =============== Private Routes =================== */}
+        {/* ================================================== */}
+        <Route element={<RootLayout />}>
+          <Route index element={<Home />} />
+          {/* <Route path="/create-post" element={<CreatePost />} /> */}
+          {/* <Route path="/posts/:slug" element={<PostDetails />} /> */}
+          {/* <Route path="/profile" element={<Profile />} /> */}
+        </Route>
+        
+        {/* Catch-all route for 404 Not Found */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </main>
   )
 }
 

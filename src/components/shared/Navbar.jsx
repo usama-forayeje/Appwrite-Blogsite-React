@@ -1,4 +1,4 @@
-import { useLogout, useUser } from '../../hooks/useAuth';
+import { useLogout, useSendVerificationEmail, useUser } from '../../hooks/useAuth';
 import { Link, useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,6 +15,7 @@ import { Home, LogOut, PlusCircle, User } from 'lucide-react';
 
 function Navbar() {
   const { data: user } = useUser();
+  const { mutate: resendEmail, isPending } = useSendVerificationEmail();
   const { mutate: logout } = useLogout();
   const navigate = useNavigate();
 
@@ -25,56 +26,68 @@ function Navbar() {
   };
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-white shadow-md w-full">
-      {/* App Logo */}
-      <Link to="/" className="text-xl font-bold">
-        MyBlog
-      </Link>
+    <>
+      {user && !user.emailVerification && (
+        <div style={{ backgroundColor: 'yellow', padding: '10px', textAlign: 'center' }}>
+          Your email is not verified. Please check your inbox.
+          <button onClick={() => resendEmail()} disabled={isPending} style={{ marginLeft: '10px' }}>
+            {isPending ? 'Sending...' : 'Resend Email'}
+          </button>
+        </div>
+      )}
 
-      {/* Nav Links and User Profile */}
-      <div className="flex items-center gap-4">
-        <Link to="/">
-          <Button variant="ghost" size="icon">
-            <Home className="h-5 w-5" />
-          </Button>
-        </Link>
-        <Link to="/create-post">
-          <Button variant="ghost" size="icon">
-            <PlusCircle className="h-5 w-5" />
-          </Button>
+      <nav className="flex items-center justify-between p-4 bg-white shadow-md w-full">
+        {/* App Logo */}
+        <Link to="/" className="text-xl font-bold">
+          MyBlog
         </Link>
 
-        {/* User Dropdown Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src={authService.getUserAvatar(user?.name)} alt={user?.name} />
-                <AvatarFallback>{user?.name.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
+        {/* Nav Links and User Profile */}
+        <div className="flex items-center gap-4">
+          <Link to="/">
+            <Button variant="ghost" size="icon">
+              <Home className="h-5 w-5" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{user?.name}</p>
-                <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate('/profile')}>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="text-red-500">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </nav>
+          </Link>
+          <Link to="/create-post">
+            <Button variant="ghost" size="icon">
+              <PlusCircle className="h-5 w-5" />
+            </Button>
+          </Link>
+
+          {/* User Dropdown Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={authService.getUserAvatar(user?.name)} alt={user?.name} />
+                  <AvatarFallback>{user?.name.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuLabel className="font-normal">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">{user?.name}</p>
+                  <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/profile')}>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout} className="text-red-500">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </nav>
+    </>
+
   )
 }
 

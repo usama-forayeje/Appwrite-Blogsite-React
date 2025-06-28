@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import service from "../api/appwrite/appwriteConfig";
-
+import authService from "../api/appwrite/auth";
+import postService from "../api/appwrite/post";
 
 export const useGetPosts = () => {
     return useQuery({
@@ -8,14 +8,14 @@ export const useGetPosts = () => {
         queryKey: ['posts'],
 
         // queryFn: অ্যাসিঙ্ক্রোনাস ফাংশন যা ডেটা নিয়ে আসে।
-        queryFn: () => service.getPosts(),
+        queryFn: () => postService.getPosts(),
     });
 };
 
 export const useGetPost = (slug) => {
     return useQuery({
         queryKey: ['post', slug],
-        queryFn: () => service.getPost(slug),
+        queryFn: () => postService.getPost(slug),
         enabled: !!slug,
     });
 };
@@ -25,7 +25,7 @@ export const useCreatePost = () => {
 
     return useMutation({
         // mutationFn: যে ফাংশনটি ডেটা পরিবর্তন করে। এটি একটি আর্গুমেন্ট (যেমন: newPost) নেয়।
-        mutationFn: (newPost) => service.createPost(newPost),
+        mutationFn: (newPost) => postService.createPost(newPost),
 
         onSuccess: () => {
             queryClient.invalidateQueries({
@@ -39,7 +39,7 @@ export const useCreatePost = () => {
 export const useUpdatePost = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ slug, data }) => service.updatePost(slug, data),
+        mutationFn: ({ slug, data }) => postService.updatePost(slug, data),
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['posts'] });
             queryClient.invalidateQueries({ queryKey: ['post', data.$id] });
@@ -51,7 +51,7 @@ export const useDeletePost = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (slug) => service.deletePost(slug),
+        mutationFn: (slug) => postService.deletePost(slug),
         onMutate: async (slugToDelete) => {
             await queryClient.cancelQueries({ queryKey: ['posts'] });
             const previousPosts = queryClient.getQueryData(['posts']);

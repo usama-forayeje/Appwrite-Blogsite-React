@@ -17,12 +17,11 @@ export class AuthService {
 
     async createAccount({ email, password, name }) {
         try {
-            const userAccount = await this.account.create(ID.unique(), email, password, name);
+            await this.account.create(ID.unique(), email, password, name);
 
-            if (userAccount) {
-                await this.sendVerificationEmail();
-            }
-            return userAccount
+            const session = await this.login({ email, password });
+            await this.sendVerificationEmail();
+            return session;
         } catch (error) {
             console.log("Appwrite service :: createAccount :: error", error.message);
             throw error;
@@ -49,15 +48,7 @@ export class AuthService {
 
     async login({ email, password }) {
         try {
-            await this.account.createEmailPasswordSession(email, password);
-            const user = await this.getCurrentUser();
-
-            if (!user.emailVerification) {
-                await this.logout();
-                throw new Error("Email not verified. Please check your inbox and verify your email first.");
-            }
-
-            return user
+            return await this.account.createEmailPasswordSession(email, password);
         } catch (error) {
             console.log("Appwrite serive :: login :: error", error);
             throw error

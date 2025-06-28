@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signupSchema } from '../../schema/auth';
 import { toast } from 'sonner';
-import { Navigate } from 'react-router';
+import { Link, Navigate } from 'react-router';
 import { Loader2 } from "lucide-react";
 import { useSignup } from '../../hooks/useAuth';
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -10,6 +10,7 @@ import { useLogin } from '../../hooks/useAuth';
 import { toast } from 'sonner';
 import authService from '../../api/appwrite/auth';
 import { loginSchema } from '../../schema/auth';
+import { Chrome, Loader2 } from 'lucide-react';
 
 function Login() {
   const navigate = useNavigate();
