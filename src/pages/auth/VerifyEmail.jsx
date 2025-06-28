@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
-import { useConfirmVerification } from '../../hooks/useAuth';
+import { useEffect } from 'react';
+import { useSearchParams, Link } from 'react-router';
 import { CircleCheck, CircleX, Loader2 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Link, useSearchParams } from 'react-router';
+
+import { useConfirmVerification } from '../../hooks/useAuth';
+import { Button } from '@/components/ui/button';
 
 function VerifyEmail() {
   const [searchParams] = useSearchParams();
@@ -17,55 +18,56 @@ function VerifyEmail() {
     }
   }, [searchParams, confirmVerification]);
 
+  let content;
+
+  if (isPending) {
+    content = (
+      <>
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <h2 className="text-2xl font-semibold tracking-tight">Verifying...</h2>
+        <p className="text-muted-foreground">Please wait while we verify your email.</p>
+      </>
+    );
+  } else if (isSuccess) {
+    content = (
+      <>
+        <CircleCheck className="h-12 w-12 text-green-500" />
+        <h2 className="text-2xl font-semibold tracking-tight">Email Verified!</h2>
+        <p className="text-muted-foreground">Your account is now active. You can proceed to login.</p>
+        <Button asChild className="mt-4 w-full">
+          <Link to="/login">Go to Login</Link>
+        </Button>
+      </>
+    );
+  } else if (isError) {
+    content = (
+      <>
+        <CircleX className="h-12 w-12 text-destructive" />
+        <h2 className="text-2xl font-semibold tracking-tight">Verification Failed</h2>
+        <p className="text-muted-foreground">
+          {error?.message || "The link might be invalid or has expired."}
+        </p>
+      </>
+    );
+  } else {
+
+    content = (
+      <>
+        <CircleX className="h-12 w-12 text-destructive" />
+        <h2 className="text-2xl font-semibold tracking-tight">Invalid Link</h2>
+        <p className="text-muted-foreground">
+          The verification link is missing required information.
+        </p>
+      </>
+    );
+  }
+
   return (
-     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Card className="w-full max-w-md text-center">
-        <CardHeader>
-          <CardTitle className="text-2xl">Email Verification</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center space-y-4">
-          {isPending && (
-            <>
-              <Loader2 className="h-12 w-12 animate-spin text-blue-500" />
-              <p className="text-lg">Verifying your email, please wait...</p>
-            </>
-          )}
 
-          {isSuccess && (
-            <>
-              <CircleCheck className="h-12 w-12 text-green-500" />
-              <p className="text-lg font-semibold">Email Verified Successfully!</p>
-              <p>Your account is now active. You can now log in.</p>
-              <Link to="/login" className="text-blue-600 underline">
-                Go to Login Page
-              </Link>
-            </>
-          )}
-
-          {isError && (
-            <>
-              <CircleX className="h-12 w-12 text-red-500" />
-              <p className="text-lg font-semibold">Verification Failed</p>
-              <p className="text-sm text-muted-foreground">
-                {error?.message || "The link might be invalid or has expired."}
-              </p>
-            </>
-          )}
-
-          {/* যদি URL এ userId বা secret না থাকে */}
-          {!isPending && !isSuccess && !isError && (
-             <>
-              <CircleX className="h-12 w-12 text-red-500" />
-              <p className="text-lg font-semibold">Invalid Link</p>
-              <p className="text-sm text-muted-foreground">
-                The verification link is missing required information.
-              </p>
-            </>
-          )}
-        </CardContent>
-      </Card>
+    <div className="w-full max-w-sm p-8 space-y-6 bg-card text-card-foreground rounded-xl border shadow-sm text-center">
+      {content}
     </div>
-  )
+  );
 }
 
-export default VerifyEmail
+export default VerifyEmail;

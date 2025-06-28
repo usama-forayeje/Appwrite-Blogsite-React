@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuthStore from "../store/authStore";
 import authService from "../api/appwrite/auth";
+import { Navigate } from "react-router";
 
 export const useUser = () => {
     return useQuery({
@@ -60,7 +61,7 @@ export const useLogout = () => {
     const { logout } = useAuthStore();
 
     return useMutation({
-        mutationFn: authService.logout,
+        mutationFn: () => authService.logout(),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['user'] });
             logout();

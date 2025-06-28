@@ -6,6 +6,9 @@ import Login from "./pages/auth/Login"
 import Register from "./pages/auth/Register"
 import VerifyEmail from "./pages/auth/VerifyEmail"
 import { Route, Routes } from "react-router"
+import CreatePost from "./pages/CreatePost"
+import PostDetails from "./pages/PostDetails"
+import Profile from "./pages/Profile"
 
 function App() {
   return (
@@ -25,9 +28,9 @@ function App() {
       {/* ================================================== */}
       <Route element={<RootLayout />}>
         <Route index element={<Home />} />
-        {/* <Route path="/create-post" element={<CreatePost />} /> */}
-        {/* <Route path="/posts/:slug" element={<PostDetails />} /> */}
-        {/* <Route path="/profile" element={<Profile />} /> */}
+        <Route path="/create-post" element={<CreatePost />} />
+        <Route path="/posts/:slug" element={<PostDetails />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
 
       {/* Catch-all route for 404 Not Found */}
