@@ -9,31 +9,31 @@ import { Route, Routes } from "react-router"
 
 function App() {
   return (
-   <main className="flex h-screen">
-      <Routes>
-        {/* ================================================== */}
-        {/* =============== Public Routes ==================== */}
-        {/* ================================================== */}
-        <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Register />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-        </Route>
 
-        {/* ================================================== */}
-        {/* =============== Private Routes =================== */}
-        {/* ================================================== */}
-        <Route element={<RootLayout />}>
-          <Route index element={<Home />} />
-          {/* <Route path="/create-post" element={<CreatePost />} /> */}
-          {/* <Route path="/posts/:slug" element={<PostDetails />} /> */}
-          {/* <Route path="/profile" element={<Profile />} /> */}
-        </Route>
-        
-        {/* Catch-all route for 404 Not Found */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </main>
+    <Routes>
+      {/* ================================================== */}
+      {/* =============== Public Routes ==================== */}
+      {/* ================================================== */}
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+      </Route>
+
+      {/* ================================================== */}
+      {/* =============== Private Routes =================== */}
+      {/* ================================================== */}
+      <Route element={<RootLayout />}>
+        <Route index element={<Home />} />
+        {/* <Route path="/create-post" element={<CreatePost />} /> */}
+        {/* <Route path="/posts/:slug" element={<PostDetails />} /> */}
+        {/* <Route path="/profile" element={<Profile />} /> */}
+      </Route>
+
+      {/* Catch-all route for 404 Not Found */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+
   )
 }
 

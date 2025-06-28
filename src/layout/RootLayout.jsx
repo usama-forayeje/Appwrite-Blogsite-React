@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router'
 import { useUser } from '../hooks/useAuth';
-import { Navbar } from '../components';
+import { Footer, Navbar, RootLoading } from '../components';
 
 function RootLayout() {
     const { data: user, isLoading } = useUser();
@@ -15,22 +15,25 @@ function RootLayout() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <p>Loading...</p>
-            </div>
+            <RootLoading />
         );
     }
 
     return (
         user && (
-            <div className="w-full md:flex">
-                <Navbar />
-                <section className="flex flex-1 h-full">
+            <div className="flex flex-col min-h-screen">
+                <header>
+                    <Navbar />
+                </header>
+
+                <main className="flex-grow container mx-auto py-8 px-4">
                     <Outlet />
-                </section>
+                </main>
+
+                <Footer />
             </div>
         )
-    )
+    );
 }
 
 export default RootLayout
