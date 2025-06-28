@@ -4,6 +4,9 @@ const config = {
     appwriteDatabaseId: String(import.meta.env.VITE_APPWRITE_DATABASE_ID),
     appwriteCollectionId: String(import.meta.env.VITE_APPWRITE_COLLECTION_ID),
     appwriteBucketId: String(import.meta.env.VITE_APPWRITE_BUCKET_ID),
+    verificationUrl: String(import.meta.env.VITE_VERIFICATION_URL),
+    OauthSuccessUrl: String(import.meta.env.VITE_SUCCESS_REDIRECT_URL),
+    OauthFailureUrl: String(import.meta.env.VITE_FAILURE_REDIRECT_URL),
 }
 
 export default config

@@ -58,7 +58,6 @@ export class Service{
                 config.appwriteDatabaseId,
                 config.appwriteCollectionId,
                 slug
-            
             )
             return true
         } catch (error) {
