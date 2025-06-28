@@ -74,15 +74,5 @@ export const useDeletePost = () => {
     });
 };
 
-export const useUploadFile = () => {
-    return useMutation({
-        mutationFn: (file) => service.uploadFile(file),
-    });
-};
 
-export const useDeleteFile = () => {
-    return useMutation({
-        mutationFn: (fileId) => service.deleteFile(fileId),
-    });
-};
 

@@ -1,5 +1,5 @@
 
-import { Client, Account, ID } from "appwrite";
+import { Client, Account, ID, Avatars } from "appwrite";
 import config from "../../config/config";
 
 
@@ -12,6 +12,7 @@ export class AuthService {
             .setEndpoint(config.appwriteUrl)
             .setProject(config.appwriteProjectId);
         this.account = new Account(this.client);
+        this.avatars = new Avatars(this.client);
     }
 
     async createAccount({ email, password, name }) {
@@ -93,6 +94,11 @@ export class AuthService {
             console.log("Appwrite serive :: logout :: error", error);
         }
     }
+
+    getUserAvatar(name) {
+        return this.avatars.getInitials(name).href;
+    }
+
 }
 
 const authService = new AuthService();
