@@ -12,3 +12,7 @@ export const postSchema = z.object({
         .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`),
     tags: z.string().optional(),
 });
+
+export const commentSchema = z.object({
+  content: z.string().min(1, "Comment cannot be empty.").max(500, "Comment is too long."),
+});

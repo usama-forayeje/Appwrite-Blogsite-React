@@ -8,5 +8,7 @@ import EmptyState from './shared/EmptyState';
 import HomeSkeleton from './shared/HomeSkeleton';
 import WelcomeHeader from './shared/WelcomeHeader';
 import TiptapEditor from './shared/TiptapEditor';
+import PostDetailsSkeleton from './shared/PostDetailsSkeleton';
+import PostStats from './shared/PostStats';
 
-export { Header, Footer, PostForm, PostCard, RootLoading, EmptyState, HomeSkeleton, WelcomeHeader, TiptapEditor };
+export { Header, Footer, PostForm, PostCard, RootLoading, EmptyState, HomeSkeleton, WelcomeHeader, TiptapEditor, PostDetailsSkeleton, PostStats };

@@ -2,14 +2,21 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar'
 import { Badge } from "@/components/ui/badge";
 import fileService from '../../api/appwrite/file'
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { calculateReadTime, formatDate } from "../../lib/utils";
 import authService from "../../api/appwrite/auth";
 import PostStats from "./PostStats";
 
 function PostCard({ post }) {
+   const navigate = useNavigate()
   const placeholderImageUrl = "https://placehold.co/600x400?text=MyBlog";
   const snippet = post.content.replace(/<[^>]*>?/gm, '').substring(0, 100) + '...';
+
+    const handleCommentClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigate(`/posts/${post.$id}?focus=comment`); // একটি বিশেষ প্যারামিটারসহ
+    }
 
   return (
     <Card className="flex flex-col overflow-hidden group transition-all hover:shadow-xl dark:bg-gray-800/50 border">
@@ -50,7 +57,7 @@ function PostCard({ post }) {
 
         {/* Action Buttons: Like and Comment Count */}
         <div className="border-t mt-4 pt-4">
-           <PostStats post={post} />
+            <PostStats post={post} onCommentClick={handleCommentClick} />
         </div>
       </div>
     </Card>
