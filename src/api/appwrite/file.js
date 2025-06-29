@@ -1,18 +1,17 @@
-import { Account, Client, ID } from "appwrite";
+import { Client, ID, Storage } from "appwrite";
 import config from "../../config/config";
 
 
 export class FileService {
     client = new Client();
-    account;
+    bucket;
 
     constructor() {
         this.client
             .setEndpoint(config.appwriteUrl)
             .setProject(config.appwriteProjectId);
-        this.account = new Account(this.client);
+        this.bucket = new Storage(this.client);
     }
-
 
     async uploadFile(file) {
         try {
@@ -20,10 +19,10 @@ export class FileService {
                 config.appwriteBucketId,
                 ID.unique(),
                 file
-            )
+            );
         } catch (error) {
-            console.log("Appwrite serive :: uploadFile :: error", error);
-            return false
+            console.log("Appwrite service :: uploadFile :: error", error);
+            throw error;
         }
     }
 
@@ -32,24 +31,39 @@ export class FileService {
             await this.bucket.deleteFile(
                 config.appwriteBucketId,
                 fileId
-            )
-            return true
+            );
+            return true;
         } catch (error) {
-            console.log("Appwrite serive :: deleteFile :: error", error);
-            return false
+            console.log("Appwrite service :: deleteFile :: error", error);
+            throw error;
         }
     }
 
     getFilePreview(fileId) {
-        return this.bucket.getFilePreview(
-            config.appwriteBucketId,
-            fileId
-        )
+        try {
+            return this.bucket.getFilePreview(
+                config.appwriteBucketId,
+                fileId
+            );
+        } catch (error) {
+            console.log("Appwrite service :: getFilePreview :: error", error);
+            throw error;
+        }
     }
 
+    getFileView(fileId) {
+        try {
+            return this.bucket.getFileView(
+                config.appwriteBucketId,
+                fileId
+            );
+        } catch (error) {
+            console.log("Appwrite service :: getFileView :: error", error);
+            throw error;
+        }
+    }
 
 }
-
 
 const fileService = new FileService()
 export default fileService

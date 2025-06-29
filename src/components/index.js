@@ -7,5 +7,6 @@ import RootLoading from './shared/RootLoading';
 import EmptyState from './shared/EmptyState';
 import HomeSkeleton from './shared/HomeSkeleton';
 import WelcomeHeader from './shared/WelcomeHeader';
+import TiptapEditor from './shared/TiptapEditor';
 
-export { Header, Footer, PostForm, PostCard, RootLoading, EmptyState, HomeSkeleton, WelcomeHeader };
+export { Header, Footer, PostForm, PostCard, RootLoading, EmptyState, HomeSkeleton, WelcomeHeader, TiptapEditor };

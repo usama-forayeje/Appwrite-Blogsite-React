@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import authService from "../api/appwrite/auth";
 import postService from "../api/appwrite/post";
+import { toast } from "sonner";
 
 export const useGetPosts = () => {
     return useQuery({
@@ -34,6 +34,37 @@ export const useCreatePost = () => {
             console.log("Post created successfully! Post list invalidated.");
         },
     });
+};
+
+export const useLikePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ postId, likes }) => postService.updatePost(postId, { likes }),
+    onMutate: async ({ postId, likes }) => {
+      await queryClient.cancelQueries({ queryKey: ['posts'] });
+      const previousPosts = queryClient.getQueryData(['posts']);
+      queryClient.setQueryData(['posts'], (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          documents: oldData.documents.map(post => 
+            post.$id === postId ? { ...post, likes } : post
+          ),
+        };
+      });
+      
+      return { previousPosts }; 
+    },
+    onError: (err, variables, context) => {
+      if (context.previousPosts) {
+        queryClient.setQueryData(['posts'], context.previousPosts);
+      }
+      toast.error("Failed to update like.");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
 };
 
 export const useUpdatePost = () => {

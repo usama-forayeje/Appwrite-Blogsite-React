@@ -1,5 +1,5 @@
 import config from '../../config/config';
-import { Client, Databases, Storage, Query } from "appwrite";
+import { Client, Databases, Storage, Query, Permission, Role } from "appwrite";
 
 export class PostService {
     client = new Client();
@@ -14,69 +14,64 @@ export class PostService {
         this.bucket = new Storage(this.client);
     }
 
-    async createPost({ title, slug, content, featuredImage, status, userId }) {
+    async createPost({ slug, ...data }) {
         try {
             return await this.databases.createDocument(
                 config.appwriteDatabaseId,
                 config.appwriteCollectionId,
                 slug,
-                {
-                    title,
-                    content,
-                    featuredImage,
-                    status,
-                    userId,
-                }
-            )
+                data, // All data including title, content, likes, tags, etc.
+                [
+                    // This is crucial for making posts public
+                    Permission.read(Role.any()), // Anyone can read this post
+                    Permission.update(Role.user(data.userId)), // Only the creator can update
+                    Permission.delete(Role.user(data.userId)), // Only the creator can delete
+                ]
+            );
         } catch (error) {
-            console.log("Appwrite serive :: createPost :: error", error);
+            console.log("Appwrite service :: createPost :: error", error);
+            throw error;
         }
     }
 
-    async updatePost(slug, { title, content, featuredImage, status }) {
+    async updatePost(postId, data) {
         try {
             return await this.databases.updateDocument(
                 config.appwriteDatabaseId,
                 config.appwriteCollectionId,
-                slug,
-                {
-                    title,
-                    content,
-                    featuredImage,
-                    status,
-
-                }
-            )
+                postId,
+                data
+            );
         } catch (error) {
-            console.log("Appwrite serive :: updatePost :: error", error);
+            console.log("Appwrite service :: updatePost :: error", error);
+            throw error;
         }
     }
 
-    async deletePost(slug) {
+    async deletePost(postId) {
         try {
             await this.databases.deleteDocument(
                 config.appwriteDatabaseId,
                 config.appwriteCollectionId,
-                slug
-            )
-            return true
+                postId
+            );
+            return true;
         } catch (error) {
-            console.log("Appwrite serive :: deletePost :: error", error);
-            return false
+            console.log("Appwrite service :: deletePost :: error", error);
+            throw error;
         }
     }
 
-    async getPost(slug) {
+    async getPost(postId) {
         try {
             return await this.databases.getDocument(
                 config.appwriteDatabaseId,
                 config.appwriteCollectionId,
-                slug
-
-            )
+                postId
+            );
         } catch (error) {
-            console.log("Appwrite serive :: getPost :: error", error);
-            return false
+            console.log("Appwrite service :: getPost :: error", error);
+            throw error;
         }
     }
 
@@ -85,11 +80,11 @@ export class PostService {
             return await this.databases.listDocuments(
                 config.appwriteDatabaseId,
                 config.appwriteCollectionId,
-                queries,
-            )
+                queries
+            );
         } catch (error) {
-            console.log("Appwrite serive :: getPosts :: error", error);
-            return false
+            console.log("Appwrite service :: getPosts :: error", error);
+            throw error;
         }
     }
 
