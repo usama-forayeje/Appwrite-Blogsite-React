@@ -1,0 +1,12 @@
+{
+  "name": "update-comment-count",
+  "version": "1.0.0",
+  "description": "Appwrite function to update comment count on posts.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "node-appwrite": "^12.0.1"
+  }
+}

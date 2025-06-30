@@ -2,42 +2,58 @@ import { useUser } from '../../hooks/useAuth';
 import { useLikePost } from '../../hooks/usePosts';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { Heart, MessageCircle } from 'lucide-react';
+import { Heart,MessageSquare } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 function PostStats({ post, onCommentClick }) {
     const { data: currentUser } = useUser();
-    const { mutate: likePost } = useLikePost();
+    const { mutate: likePost, isPending } = useLikePost();
 
-    const likesArray = post.likes || [];
-    const hasLiked = likesArray.includes(currentUser?.$id);
+    const [likes, setLikes] = useState(post.likes);
+    const [isLiked, setIsLiked] = useState(false);
 
-    const handleLike = (e) => {
+    useEffect(() => {
+        if (currentUser) {
+            setIsLiked(likes.includes(currentUser.$id));
+        }
+    }, [currentUser, likes]);
+
+    const handleLikePost = (e) => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!currentUser) return; 
+        if (!currentUser) {
+            toast.info("You must be logged in to like a post.");
+            return;
+        }
 
-        let newLikes = [...likesArray];
-        if (hasLiked) {
-            newLikes = newLikes.filter(id => id !== currentUser.$id);
+        let newLikes = [...likes];
+        if (isLiked) {
+            newLikes = newLikes.filter((id) => id !== currentUser.$id);
         } else {
             newLikes.push(currentUser.$id);
         }
+        setLikes(newLikes);
+        setIsLiked(!isLiked);
         likePost({ postId: post.$id, likes: newLikes });
     };
 
+    console.log(post);
+    
+
     return (
-         <div className="flex items-center justify-between z-20">
-            <div className="flex items-center gap-4">
-                <Button variant="ghost" size="sm" className="flex items-center gap-1.5" onClick={handleLike}>
-                    <motion.div whileTap={{ scale: 1.5, rotate: -15 }} transition={{ duration: 0.2 }}>
-                        <Heart className={`h-5 w-5 transition-all ${hasLiked ? 'text-red-500 fill-red-500' : 'text-muted-foreground'}`} />
-                    </motion.div>
-                    <span className="text-xs">{likesArray.length}</span>
+        <div className="flex justify-between items-center z-20">
+            <div className="flex gap-4 items-center">
+                <Button variant="ghost" size="sm" className="p-2" onClick={handleLikePost} disabled={isPending}>
+                    <Heart
+                        className={`h-5 w-5 ${isLiked ? 'text-red-500 fill-current' : 'text-muted-foreground'}`}
+                    />
+                    <span className="ml-2 text-sm font-medium">{likes.length}</span>
                 </Button>
-                <Button variant="ghost" size="sm" className="flex items-center gap-1.5 text-muted-foreground" onClick={onCommentClick}>
-                    <MessageCircle className="h-5 w-5" />
-                    <span className="text-xs">{post.commentCount || 0}</span>
+                <Button variant="ghost" size="sm" className="p-2" onClick={onCommentClick}>
+                    <MessageSquare className="h-5 w-5 text-muted-foreground" />
+                    <span className="ml-2 text-sm font-medium">{post.commentCount || 0}</span>
                 </Button>
             </div>
         </div>

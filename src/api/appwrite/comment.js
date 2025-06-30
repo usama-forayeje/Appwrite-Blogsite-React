@@ -10,38 +10,38 @@ export class CommentService {
         this.databases = new Databases(this.client);
     }
 
-    async createComment(commentData) {
+    async createComment({ postId, content, authorName, userId }) {
         try {
             return await this.databases.createDocument(
-                config.appwriteDatabaseId,
-                config.appwriteCommentsCollectionId,
-                ID.unique(),
-                commentData,
-                [
-                    Permission.read(Role.any()), 
-                    Permission.update(Role.user(commentData.authorId)), 
-                    Permission.delete(Role.user(commentData.authorId)),
-                ]
+                config.appwriteDatabaseId,           // আর্গুমেন্ট ১: ডেটাবেস আইডি
+                config.appwriteCommentsCollectionId, // আর্গুমেন্ট ২: কালেকশন আইডি (এটি মিসিং ছিল)
+                ID.unique(),                         // আর্গুমেন্ট ৩: নতুন ডকুমেন্টের জন্য ইউনিক আইডি
+                {                                    // আর্গুমেন্ট ৪: ডেটা
+                    postId,
+                    content,
+                    authorName,
+                    authorId: userId,
+                }
             );
         } catch (error) {
-            console.log("Appwrite service :: createComment :: error", error);
+            console.error("Appwrite service :: createComment :: error", error);
             throw error;
         }
     }
 
-    async getCommentsByPost(postId) {
+    async getComments(postId) {
         try {
             return await this.databases.listDocuments(
                 config.appwriteDatabaseId,
                 config.appwriteCommentsCollectionId,
                 [
                     Query.equal('postId', postId),
-                    Query.orderDesc('$createdAt') 
+                    Query.orderDesc('$createdAt')
                 ]
             );
         } catch (error) {
-            console.log("Appwrite service :: getCommentsByPost :: error", error);
-            throw error;
+            console.error("Appwrite service :: getComments :: error", error);
+            return null;
         }
     }
 }
