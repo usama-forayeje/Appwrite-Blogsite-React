@@ -1,14 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import postService from "../api/appwrite/post";
-import { toast } from "sonner";
 import { usePostStore } from "../store/usePostStore";
 
 export const useGetPosts = () => {
   return useQuery({
-    // queryKey: একটি ইউনিক কী, যা দিয়ে React Query এই ডেটা ক্যাশ করে।
     queryKey: ['posts'],
 
-    // queryFn: অ্যাসিঙ্ক্রোনাস ফাংশন যা ডেটা নিয়ে আসে।
     queryFn: () => postService.getPosts(),
   });
 };
@@ -25,7 +22,6 @@ export const useCreatePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    // mutationFn: যে ফাংশনটি ডেটা পরিবর্তন করে। এটি একটি আর্গুমেন্ট (যেমন: newPost) নেয়।
     mutationFn: (newPost) => postService.createPost(newPost),
 
     onSuccess: () => {

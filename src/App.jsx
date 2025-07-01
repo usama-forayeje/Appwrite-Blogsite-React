@@ -9,6 +9,8 @@ import { Route, Routes } from "react-router"
 import CreatePost from "./pages/CreatePost"
 import PostDetails from "./pages/PostDetails"
 import Profile from "./pages/Profile"
+import PublicLayout from "./layout/PublicLayout"
+import PublicHome from "./pages/PublicHome"
 
 function App() {
   return (
@@ -16,6 +18,14 @@ function App() {
     <Routes>
       {/* ================================================== */}
       {/* =============== Public Routes ==================== */}
+      {/* ================================================== */}
+      <Route element={<PublicLayout />}>
+        <Route path="/public" element={<PublicHome />} />
+        <Route index element={<PublicHome />} />
+      </Route>
+
+      {/* ================================================== */}
+      {/* =============== Auth Routes ====================== */}
       {/* ================================================== */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
@@ -27,7 +37,7 @@ function App() {
       {/* =============== Private Routes =================== */}
       {/* ================================================== */}
       <Route element={<RootLayout />}>
-        <Route index element={<Home />} />
+        <Route path="/dashboard" element={<Home />} />
         <Route path="/create-post" element={<CreatePost />} />
         <Route path="/posts/:slug" element={<PostDetails />} />
         <Route path="/profile" element={<Profile />} />

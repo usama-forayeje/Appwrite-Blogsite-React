@@ -1,73 +1,92 @@
-import { useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router';
-import { CircleCheck, CircleX, Loader2 } from "lucide-react";
-
-import { useConfirmVerification } from '../../hooks/useAuth';
-import { Button } from '@/components/ui/button';
+import { useEffect } from "react"
+import { useSearchParams } from "react-router"
+import { Link } from "react-router"
+import { motion } from "framer-motion"
+import { Button } from "../../components/ui/button"
+import { useConfirmVerification } from "../../hooks/useAuth"
+import { CircleCheck, CircleX, Loader2 } from "lucide-react"
 
 function VerifyEmail() {
-  const [searchParams] = useSearchParams();
-  const { mutate: confirmVerification, isPending, isSuccess, isError, error } = useConfirmVerification();
+  const [searchParams] = useSearchParams()
+  const { mutate: confirmVerification, isPending, isSuccess, isError, error } = useConfirmVerification()
 
   useEffect(() => {
-    const userId = searchParams.get("userId");
-    const secret = searchParams.get("secret");
+    const userId = searchParams.get("userId")
+    const secret = searchParams.get("secret")
 
     if (userId && secret) {
-      confirmVerification({ userId, secret });
+      confirmVerification({ userId, secret })
     }
-  }, [searchParams, confirmVerification]);
+  }, [searchParams, confirmVerification])
 
-  let content;
+  let content
 
   if (isPending) {
     content = (
-      <>
-        <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <h2 className="text-2xl font-semibold tracking-tight">Verifying...</h2>
-        <p className="text-muted-foreground">Please wait while we verify your email.</p>
-      </>
-    );
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center space-y-4"
+      >
+        <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto" />
+        <h2 className="text-2xl font-bold">Verifying your email...</h2>
+        <p className="text-muted-foreground">Please wait while we verify your account.</p>
+      </motion.div>
+    )
   } else if (isSuccess) {
     content = (
-      <>
-        <CircleCheck className="h-12 w-12 text-green-500" />
-        <h2 className="text-2xl font-semibold tracking-tight">Email Verified!</h2>
-        <p className="text-muted-foreground">Your account is now active. You can proceed to login.</p>
-        <Button asChild className="mt-4 w-full">
-          <Link to="/login">Go to Login</Link>
-        </Button>
-      </>
-    );
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center space-y-4"
+      >
+        <CircleCheck className="h-16 w-16 text-green-500 mx-auto" />
+        <h2 className="text-2xl font-bold text-green-600">Email verified!</h2>
+        <p className="text-muted-foreground">Your account has been successfully verified. You can now sign in.</p>
+        <Link to="/login">
+          <Button size="lg" className="mt-6">
+            Continue to Sign In
+          </Button>
+        </Link>
+      </motion.div>
+    )
   } else if (isError) {
     content = (
-      <>
-        <CircleX className="h-12 w-12 text-destructive" />
-        <h2 className="text-2xl font-semibold tracking-tight">Verification Failed</h2>
-        <p className="text-muted-foreground">
-          {error?.message || "The link might be invalid or has expired."}
-        </p>
-      </>
-    );
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center space-y-4"
+      >
+        <CircleX className="h-16 w-16 text-destructive mx-auto" />
+        <h2 className="text-2xl font-bold text-destructive">Verification failed</h2>
+        <p className="text-muted-foreground">{error?.message || "The verification link is invalid or has expired."}</p>
+        <Link to="/login">
+          <Button variant="outline" size="lg" className="mt-6 bg-transparent">
+            Back to Sign In
+          </Button>
+        </Link>
+      </motion.div>
+    )
   } else {
-
     content = (
-      <>
-        <CircleX className="h-12 w-12 text-destructive" />
-        <h2 className="text-2xl font-semibold tracking-tight">Invalid Link</h2>
-        <p className="text-muted-foreground">
-          The verification link is missing required information.
-        </p>
-      </>
-    );
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center space-y-4"
+      >
+        <CircleX className="h-16 w-16 text-destructive mx-auto" />
+        <h2 className="text-2xl font-bold text-destructive">Invalid verification link</h2>
+        <p className="text-muted-foreground">The verification link is missing required information.</p>
+        <Link to="/login">
+          <Button variant="outline" size="lg" className="mt-6 bg-transparent">
+            Back to Sign In
+          </Button>
+        </Link>
+      </motion.div>
+    )
   }
 
-  return (
-
-    <div className="w-full max-w-sm p-8 space-y-6 bg-card text-card-foreground rounded-xl border shadow-sm text-center">
-      {content}
-    </div>
-  );
+  return <div className="py-8">{content}</div>
 }
 
-export default VerifyEmail;
+export default VerifyEmail
