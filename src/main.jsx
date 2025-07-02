@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { BrowserRouter } from 'react-router'
-import ThemeProvider from './components/providers/ThemeProvider.jsx'
+import { ThemeProvider } from './components/providers/ThemeProvider.jsx'
 
 const queryClient = new QueryClient()
 

@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link, useSearchParams } from "react-router"
 import { useEffect } from "react"
 import { motion } from "framer-motion"
+import parse from "html-react-parser"
 import { useGetPost } from "../hooks/usePosts"
 import { useUser } from "../hooks/useAuth"
 import CommentSection from "../components/shared/CommentSection"
@@ -222,10 +223,9 @@ function PostDetails() {
         )}
 
         {/* Post Content */}
-        <div
-          className="prose dark:prose-invert max-w-none mb-10 text-lg leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: post?.content }}
-        />
+        <div className="prose dark:prose-invert max-w-none mb-10 text-lg leading-relaxed prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-em:text-foreground prose-blockquote:text-muted-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:text-foreground">
+          {parse(post?.content || "")}
+        </div>
 
         {/* Stats */}
         <div className="flex items-center gap-6 border-t border-b py-6 mb-10">

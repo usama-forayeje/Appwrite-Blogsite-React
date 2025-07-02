@@ -8,6 +8,7 @@ const config = {
     OauthSuccessUrl: String(import.meta.env.VITE_SUCCESS_REDIRECT_URL),
     OauthFailureUrl: String(import.meta.env.VITE_FAILURE_REDIRECT_URL),
     appwriteCommentsCollectionId: String(import.meta.env.VITE_APPWRITE_COMMENTS_COLLECTION_ID),
+    appwriteUsersCollectionId: String(import.meta.env.VITE_APPWRITE_USERS_COLLECTION_ID),
     tinyMCEApiKey: String(import.meta.env.VITE_TINYMCE_API_KEY),
 }
 

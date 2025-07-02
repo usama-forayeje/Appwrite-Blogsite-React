@@ -1,24 +1,33 @@
+import { useState } from "react"
+import { Link, useNavigate } from "react-router"
 import { motion } from "framer-motion"
+import parse from "html-react-parser"
 import { Card, CardContent, CardHeader } from "../ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { Badge } from "@/components/ui/badge";
-import { Button } from "../ui/button";
-import fileService from '../../api/appwrite/file'
-import { Link, useNavigate } from "react-router";
-import { calculateReadTime, formatDate } from "../../lib/utils";
+import { Badge } from "../ui/badge"
+import { Button } from "../ui/button"
+import PostStats from "./PostStats"
+import fileService from "../../api/appwrite/file"
+import authService from "../../api/appwrite/auth"
+import { useGetCommentCount } from "../../hooks/useComments"
+import { calculateReadTime, formatDate } from "../../lib/utils"
 import { Clock, Calendar, MoreHorizontal, Share2 } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
-import authService from "../../api/appwrite/auth";
-import PostStats from "./PostStats";
-import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "sonner"
 
 function PostCard({ post, variant = "default", showActions = true }) {
   const navigate = useNavigate()
   const [imageError, setImageError] = useState(false)
+  const { data: commentCount } = useGetCommentCount(post.$id)
 
   const placeholderImageUrl = `/placeholder.svg?height=300&width=400&text=${encodeURIComponent(post.title)}`
-  const snippet = post.content.replace(/<[^>]*>?/gm, "").substring(0, 150) + "..."
+
+  // Clean HTML content and create snippet
+  const cleanContent = post.content.replace(/<[^>]*>?/gm, "")
+  const snippet = cleanContent.substring(0, 150) + (cleanContent.length > 150 ? "..." : "")
+
+  // Use comment count from API or fallback to post data
+  const actualCommentCount = commentCount || post.commentCount || 0
 
   const handleCommentClick = (e) => {
     e.preventDefault()
@@ -104,7 +113,7 @@ function PostCard({ post, variant = "default", showActions = true }) {
             </Link>
 
             {/* Content Preview */}
-            <p className="text-muted-foreground line-clamp-3 mb-4">{snippet}</p>
+            <div className="text-muted-foreground line-clamp-3 mb-4 prose-sm">{parse(snippet)}</div>
 
             {/* Featured Image */}
             {post.featuredImage && (
@@ -123,7 +132,7 @@ function PostCard({ post, variant = "default", showActions = true }) {
             {/* Actions */}
             {showActions && (
               <div className="border-t pt-4">
-                <PostStats post={post} onCommentClick={handleCommentClick} />
+                <PostStats post={{ ...post, commentCount: actualCommentCount }} onCommentClick={handleCommentClick} />
               </div>
             )}
           </CardContent>
@@ -175,7 +184,11 @@ function PostCard({ post, variant = "default", showActions = true }) {
               </div>
               {showActions && (
                 <div className="mt-3">
-                  <PostStats post={post} onCommentClick={handleCommentClick} compact />
+                  <PostStats
+                    post={{ ...post, commentCount: actualCommentCount }}
+                    onCommentClick={handleCommentClick}
+                    compact
+                  />
                 </div>
               )}
             </div>
@@ -225,7 +238,7 @@ function PostCard({ post, variant = "default", showActions = true }) {
           </CardHeader>
 
           {/* Excerpt */}
-          <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{snippet}</p>
+          <div className="text-sm text-muted-foreground line-clamp-3 mb-4 prose-sm">{parse(snippet)}</div>
 
           {/* Author Info */}
           <div className="flex items-center gap-3 mb-4">
@@ -250,7 +263,7 @@ function PostCard({ post, variant = "default", showActions = true }) {
           {/* Stats */}
           {showActions && (
             <div className="border-t pt-4">
-              <PostStats post={post} onCommentClick={handleCommentClick} />
+              <PostStats post={{ ...post, commentCount: actualCommentCount }} onCommentClick={handleCommentClick} />
             </div>
           )}
         </CardContent>
