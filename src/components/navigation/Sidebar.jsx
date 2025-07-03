@@ -1,14 +1,22 @@
-import { Link, useLocation } from "react-router"; 
+import { Link, useLocation } from "react-router"; // Changed to react-router-dom for clarity
 import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent } from "../ui/sheet";
 import { Badge } from "../ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"; 
-import { useUser } from "../../hooks/useAuth";
-import authService from "../../api/appwrite/auth"; 
-import { Home, PlusCircle, User, BookOpen, Heart, TrendingUp, Settings, Users, Bookmark, Bell, Loader2, X } from "lucide-react"; 
-
+import {
+  Home,
+  PlusCircle,
+  User,
+  BookOpen,
+  Heart,
+  TrendingUp,
+  Settings,
+  Users,
+  Bookmark,
+  Bell,
+  X,
+} from "lucide-react";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: Home },
@@ -23,72 +31,17 @@ const navigation = [
 const bottomNavigation = [
   { name: "Profile", href: "/profile", icon: User },
   { name: "Settings", href: "/settings", icon: Settings },
-  
 ];
 
 function Sidebar({ open, onClose }) {
   const location = useLocation();
-  const { data: user, isLoading: isUserLoading } = useUser();
 
   const SidebarContent = () => (
-    // এই Div টি সাইডবারের ভিতরের সব কন্টেন্ট ধারণ করবে
-    // h-full ক্লাসটি তার প্যারেন্ট div (যা ডেস্কটপে fixed থাকবে) এর সম্পূর্ণ উচ্চতা নেবে
-    <div className="flex flex-col h-full bg-card shadow-lg dark:shadow-none">
-      {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-6 border-b">
-        <Link to="/dashboard" className="flex items-center space-x-2" onClick={onClose}>
-          <span className="font-bold text-2xl gradient-text">MyBlog</span>
-        </Link>
-        <Button variant="ghost" size="icon" onClick={onClose} className="lg:hidden">
-          <X className="h-5 w-5" /> {/* মোবাইল সাইডবার বন্ধ করার বাটন */}
-        </Button>
-      </div>
-
-      {/* User Profile Section (যদি যোগ করেন) */}
-      {/* আমি আগের উত্তরে যে ইউজার প্রোফাইল সেকশন, স্ট্যাটস এবং লোডিং স্কেলিটন দিয়েছিলাম,
-          সেগুলো যোগ করলে এখানে বসবে। আপাতত, আপনার দেওয়া কোড অনুযায়ী এটি খালি থাকবে। */}
-      {user && !isUserLoading ? (
-        <div className="p-4 border-b">
-          <Link to="/profile" onClick={onClose} className="flex items-center gap-3 hover:bg-muted/50 rounded-md p-2 -m-2 transition-colors duration-200">
-            <Avatar className="h-14 w-14">
-              <AvatarImage src={authService.getUserAvatar(user.name) || "/placeholder.svg"} alt={user.name} />
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
-                {user.name?.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-base font-semibold truncate text-foreground">{user.name}</p>
-              <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-            </div>
-          </Link>
-          {/* Quick Stats - আপাতত হার্ডকোড করা */}
-          <div className="grid grid-cols-3 gap-2 mt-4 text-center">
-            <div><p className="text-lg font-bold text-primary">12</p><p className="text-xs text-muted-foreground">Posts</p></div>
-            <div><p className="text-lg font-bold text-primary">156</p><p className="text-xs text-muted-foreground">Likes</p></div>
-            <div><p className="text-lg font-bold text-primary">89</p><p className="text-xs text-muted-foreground">Following</p></div>
-          </div>
-        </div>
-      ) : (
-        // User loading skeleton if user is not loaded
-        <div className="p-4 border-b animate-pulse">
-            <div className="flex items-center gap-3">
-                <div className="h-14 w-14 rounded-full bg-muted"></div>
-                <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-muted rounded w-3/4"></div>
-                    <div className="h-3 bg-muted rounded w-1/2"></div>
-                </div>
-            </div>
-            <div className="grid grid-cols-3 gap-2 mt-4">
-                <div className="h-4 bg-muted rounded"></div>
-                <div className="h-4 bg-muted rounded"></div>
-                <div className="h-4 bg-muted rounded"></div>
-            </div>
-        </div>
-      )}
-
-
+    // Added 'flex-1' and 'overflow-hidden' to ensure content fills the height and hides scrollbar
+    <div className="flex flex-col h-full bg-card shadow-lg">
       {/* Main Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
+      {/* 'overflow-y-auto' for scrollable content, 'scrollbar-hide' to hide the scrollbar */}
+      <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-hide">
         {navigation.map((item) => {
           const isActive = location.pathname === item.href;
           return (
@@ -98,10 +51,19 @@ function Sidebar({ open, onClose }) {
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn(
                     "w-full justify-start gap-3 h-12 text-left rounded-lg group",
-                    isActive ? "bg-primary/10 text-primary border-l-4 border-primary/50 shadow-sm" : "hover:bg-muted/60",
+                    isActive
+                      ? "bg-primary/10 text-primary border-l-4 border-primary/50 shadow-sm"
+                      : "hover:bg-muted/60"
                   )}
                 >
-                  <item.icon className={cn("h-5 w-5 flex-shrink-0", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+                  <item.icon
+                    className={cn(
+                      "h-5 w-5 flex-shrink-0",
+                      isActive
+                        ? "text-primary"
+                        : "text-muted-foreground group-hover:text-foreground"
+                    )}
+                  />
                   <span className="flex-1 text-base">{item.name}</span>
                   {item.name === "Notifications" && (
                     <Badge variant="destructive" className="ml-auto animate-pulse-slow">
@@ -115,16 +77,30 @@ function Sidebar({ open, onClose }) {
         })}
       </nav>
 
-      {/* Trending Section (যদি যোগ করেন) */}
-      {/* আপনার দেওয়া কোডে এই সেকশনটিও নেই। যোগ করলে এখানে বসবে। */}
-      <div className="p-4 border-t">
+      {/* Trending Section */}
+      {/* 'overflow-y-auto' for scrollable content, 'scrollbar-hide' to hide the scrollbar */}
+      <div className="p-4 border-t overflow-y-auto scrollbar-hide">
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="h-4 w-4 text-primary" />
-          <span className="text-sm font-semibold text-foreground">Trending Topics</span>
+          <span className="text-sm font-semibold text-foreground">
+            Trending Topics
+          </span>
         </div>
         <div className="space-y-2">
-          {["React", "JavaScript", "Web Development", "UI/UX"].map((topic) => (
-            <Button key={topic} variant="ghost" size="sm" className="w-full justify-start text-sm h-8 hover:bg-muted/60">
+          {[
+            "React",
+            "JavaScript",
+            "Web Development",
+            "Node.js",
+            "Python",
+            "UI/UX",
+          ].map((topic) => (
+            <Button
+              key={topic}
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-sm h-8 hover:bg-muted/60"
+            >
               #{topic}
             </Button>
           ))}
@@ -142,10 +118,19 @@ function Sidebar({ open, onClose }) {
                   variant={isActive ? "secondary" : "ghost"}
                   className={cn(
                     "w-full justify-start gap-3 h-12 rounded-lg group",
-                    isActive ? "bg-primary/10 text-primary border-l-4 border-primary/50 shadow-sm" : "hover:bg-muted/60",
+                    isActive
+                      ? "bg-primary/10 text-primary border-l-4 border-primary/50 shadow-sm"
+                      : "hover:bg-muted/60"
                   )}
                 >
-                  <item.icon className={cn("h-5 w-5", isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground")} />
+                  <item.icon
+                    className={cn(
+                      "h-5 w-5",
+                      isActive
+                        ? "text-primary"
+                        : "text-muted-foreground group-hover:text-foreground"
+                    )}
+                  />
                   <span className="text-base">{item.name}</span>
                 </Button>
               </motion.div>
@@ -158,16 +143,8 @@ function Sidebar({ open, onClose }) {
 
   return (
     <>
-      {/* Desktop Sidebar:
-          - hidden lg:flex: ছোট স্ক্রিনে হাইড, বড় স্ক্রিনে ফ্লেক্স
-          - lg:fixed lg:top-14 lg:bottom-16: Header (h-14) এর নিচে শুরু এবং Footer (h-16) এর উপর শেষ
-            (আপনার Header ও Footer এর উচ্চতা অনুযায়ী 14 এবং 16 এর মান পরিবর্তন করতে পারেন)
-          - lg:w-64: ফিক্সড প্রস্থ
-          - lg:z-30: z-index যাতে Header এর নিচে থাকে
-          - bg-card shadow-xl: সাইডবারের ব্যাকগ্রাউন্ড ও শ্যাডো
-          - overflow-y-auto: যদি কন্টেন্ট বেশি হয়, তাহলে সাইডবার নিজেই স্ক্রল হবে
-      */}
-      <div className="hidden lg:fixed lg:top-14 lg:bottom-16 lg:w-64 lg:flex lg:flex-col lg:z-30 bg-card shadow-xl overflow-y-auto">
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex lg:flex-col lg:w-64 lg:z-30 bg-card shadow-xl h-screen top-0 sticky">
         <SidebarContent />
       </div>
 
@@ -181,4 +158,4 @@ function Sidebar({ open, onClose }) {
   );
 }
 
-export default Sidebar
+export default Sidebar;

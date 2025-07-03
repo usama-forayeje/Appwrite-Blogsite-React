@@ -1,11 +1,11 @@
-import { Navigate, Outlet } from "react-router"
-import { useUser } from "../hooks/useAuth"
-import { useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import Header from "../components/navigation/Header"
-import Sidebar from "../components/navigation/Sidebar"
-import RootLoading from "../components/shared/RootLoading"
-import ErrorBoundary from "../components/shared/ErrorBoundary"
+import { Navigate, Outlet } from "react-router";
+import { useUser } from "../hooks/useAuth";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Header from "../components/navigation/Header";
+import Sidebar from "../components/navigation/Sidebar";
+import RootLoading from "../components/shared/RootLoading";
+import ErrorBoundary from "../components/shared/ErrorBoundary";
 
 function RootLayout() {
   const { data: user, isLoading } = useUser();
@@ -36,8 +36,9 @@ function RootLayout() {
             <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             {/* Main content area */}
+            {/* The lg:ml-64 ensures content shifts to the right when sidebar is open */}
             <main className="flex-1 lg:ml-64 transition-all duration-300 overflow-auto">
-              <div className="min-h-[calc(100vh - 56px - 64px)] pt-14 p-4 lg:p-6 pb-20"> {/* Header 56px (h-14), Footer 64px (h-16) ধরে */}
+              <div>
                 <Outlet />
               </div>
             </main>
@@ -48,4 +49,4 @@ function RootLayout() {
   );
 }
 
-export default RootLayout
+export default RootLayout;

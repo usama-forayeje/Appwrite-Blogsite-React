@@ -1,5 +1,4 @@
-// src/components/shared/ErrorBoundary.jsx (একটি নতুন ফাইল)
-import React from 'react';
+import React from "react";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -48,8 +47,3 @@ class ErrorBoundary extends React.Component {
 }
 
 export default ErrorBoundary;
-
-// তারপর RootLayout-এ এটি ব্যবহার করুন:
-// <ErrorBoundary>
-//   <motion.div> ... </motion.div>
-// </ErrorBoundary>
